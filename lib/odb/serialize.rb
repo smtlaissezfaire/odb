@@ -34,6 +34,14 @@ module Odb
       rescue ArgumentError
         []
       end
+      
+      def find_by_attribute(attribute_name, value)
+        all.select { |row| row.send(attribute_name) == value }
+      end
+      
+      def find_first_by_attribute(attribute_name, value)
+        all.detect { |row| row.__send__(attribute_name) == value }
+      end
     end
     
     class StartupHooks

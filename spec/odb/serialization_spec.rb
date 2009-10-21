@@ -190,11 +190,32 @@ module Odb
     end
     
     describe "finding by attribute" do
-      it "should be able to find based on an attribute"
+      before do
+        Odb.stub!(:database_path).and_return "/foo"
+        TestingClass.serialize
+      end
       
-      it "should not find it if it does not exist"
+      it "should be able to find based on an attribute" do
+        obj = TestingClass.new
+        obj.an_attribute = "foo"
+        obj.commit
+        
+        found = TestingClass.find_by_attribute("an_attribute", "foo")
+        found.size.should == 1
+      end
       
-      it "should find based on the correct attribute"
+      it "should be able to find only the first row which matches" do
+        obj = TestingClass.new
+        obj.an_attribute = "foo"
+        obj.commit
+        
+        obj2 = TestingClass.new
+        obj2.an_attribute = "foo"
+        obj.commit
+        
+        found = TestingClass.find_first_by_attribute("an_attribute", "foo")
+        found.should be_a_kind_of(TestingClass)
+      end
     end
   end
 end
