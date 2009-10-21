@@ -12,24 +12,6 @@ module Odb
       FakeFS.deactivate!
     end
     
-    # class TestingTargetClass
-    #   include Odb::Serialize
-    #   
-    #   attr_accessor :attribute_one
-    # end
-    # 
-    # class TestingClassTwo
-    #   include Odb::Serialize
-    # end
-    # 
-    # before do
-    #   @obj = TestingTargetClass.new
-    # end
-    # 
-    # it "should be able to dump an object through Marshal" do
-    #   @obj.dump.should == Marshal.dump(@obj)
-    # end
-    # 
     describe "after including + calling serialize" do
       it "should create the odb file path" do
         Odb.stub!(:database_path).and_return "/foo"
