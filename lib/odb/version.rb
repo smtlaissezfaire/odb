@@ -1,4 +1,4 @@
-module PrototypeProject
+module Odb
   module Version
     class << self
       def string

@@ -1,6 +1,6 @@
 require "using"
 
-module PrototypeProject
+module Odb
   extend Using
   
   using :Version
