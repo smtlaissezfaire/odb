@@ -30,12 +30,13 @@ module Odb
     #   @obj.dump.should == Marshal.dump(@obj)
     # end
     # 
-    describe "on including the class" do
+    describe "after including + calling serialize" do
       it "should create the odb file path" do
         Odb.stub!(:database_path).and_return "/foo"
         
         Class.new do
           include Odb::Serialize
+          serialize
         end
         
         File.exists?("/foo").should be_true
@@ -46,6 +47,7 @@ module Odb
         
         Class.new do
           include Odb::Serialize
+          serialize
         end
         
         File.exists?("/bar").should be_true
@@ -56,6 +58,7 @@ module Odb
         
         Class.new do
           include Odb::Serialize
+          serialize
         end
         
         File.directory?("/foo").should be_true
@@ -71,6 +74,7 @@ module Odb
           end
           
           include Odb::Serialize
+          serialize
         end
         
         File.exists?("/foo/bar/klass_name").should be_true
@@ -85,6 +89,7 @@ module Odb
           end
           
           include Odb::Serialize
+          serialize
         end
         
         File.exists?("/foo/bar/FooBar").should be_true
@@ -99,46 +104,90 @@ module Odb
           end
           
           include Odb::Serialize
+          serialize
         end
         
         File.exists?("/foo/bar/FooBar").should be_true
       end
-      
-      # it "should save a file path with the class name, underscored" do
-      #   
-      #   
-      #   Dir.mkdir "/foo"
-      #   Dir.mkdir "/foo/bar"
-      #   
-      #   Odb.stub!(:database_path).and_return "/foo/bar"
-      #   
-      #   @obj.commit
-      #   
-      #   File.exists?("/foo/bar/testing_target_class").should be_true
-      # end
-      
-      # it "should use the correct path" do
-      #   Dir.mkdir "/foo"
-      #   
-      #   Odb.stub!(:database_path).and_return "/foo"
-      #   
-      #   @obj.commit
-      #   
-      #   File.exists?("/foo/testing_target_class").should be_true
-      # end
-      # 
-      # it "should use the correct class name" do
-      #   Dir.mkdir "/foo"
-      #   
-      #   Odb.stub!(:database_path).and_return "/foo"
-      #   
-      #   @obj.commit
-      #   
-      #   File.exists?("/foo/testing_class_two").should be_true
-      # end
     end
     
-    describe "finding all"
+    class TestingClass
+      include Odb::Serialize
+      
+      attr_accessor :an_attribute
+    end
+    
+    class EqualTestingClass
+      include Odb::Serialize
+      
+      def ==(other)
+        true
+      end
+    end
+    
+    describe "committing" do
+      before do
+        Odb.stub!(:database_path).and_return "/foo/bar"
+        
+        TestingClass.serialize
+        
+        @obj = TestingClass.new
+      end
+      
+      it "should save without an error" do
+        lambda {
+          @obj.commit
+        }.should_not raise_error
+      end
+      
+      it "should marshal the data to disk" do
+        @obj.commit
+        
+        File.read("/foo/bar/#{@obj.class.to_s}").should == Marshal.dump([@obj])
+      end
+      
+      it "should replace the data if already marshaled in the past (if they are the same with ==)" do
+        EqualTestingClass.serialize
+        obj = EqualTestingClass.new
+        
+        obj.commit
+        obj.commit
+        
+        EqualTestingClass.all.size.should == 1
+      end
+    end
+    
+    describe "finding all" do
+      before do
+        Odb.stub!(:database_path).and_return "/foo"
+        
+        TestingClass.serialize
+      end
+      
+      it "should find no records when empty" do
+        TestingClass.all.should == []
+      end
+      
+      it "should find a record after commiting it" do
+        obj = TestingClass.new
+        obj.an_attribute = "foobar"
+        
+        obj.commit
+        
+        TestingClass.all.size.should == 1
+        TestingClass.all.first.an_attribute.should == "foobar"
+      end
+      
+      it "should find multiple records" do
+        obj_one = TestingClass.new
+        obj_two = TestingClass.new
+        
+        obj_one.commit
+        obj_two.commit
+        
+        TestingClass.all.size.should == 2
+      end
+    end
     
     describe "finding by attribute" do
       it "should be able to find based on an attribute"
