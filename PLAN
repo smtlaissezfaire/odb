@@ -1,0 +1,73 @@
+objects.idx (object index file),
+objects (file)
+
+Objects -
+  create basic primitives, nil, true, false
+  create objects file with these values
+  create objects.idx with ids
+  
+  odb object id = index (line #) in objects.idx + some specified offset
+
+  map ruby object ids to odb object ids.  new objects get the next offset in the file,
+  existing objects either have none (since they aren't yet stored), or have one after being stored
+  
+  object data is specified by protocol buffer, which also provides serialization:
+    - when primitive (nil, true, false):
+      stored as enumerated type nil = 0, true = 1, false = 2
+    - when collection (Array, Hash, Set, etc.)
+      ?
+    - when user specified object:
+      class name
+      data = ivar map
+        - ivar name (without the '@' sign)
+        - odb object id reference
+        
+Looking up an object:
+  given an obj
+  Find if obj's ruby object id (#object_id) is in the ruby process object id map.
+    if so,
+      Lookup odb object id in process map.
+      Find it in the objects.idx file
+      Use the value on objects.idx file to find it in the objects file
+      marshal the object from the objects file
+    if not
+      not a stored object
+      
+Storing an obj
+  Marshal it, write the value to a new line in the objects file.
+
+  if the ruby object id is in the process map:
+    Take the value given from the objects file, replace the value in the objects.idx file
+  if it isn't in the process map:
+    add a new line to the objects.idx file, with the value from the objects file
+    add it to the process map (ruby object id => objects.idx id)
+    
+Loading a marshaled object from a string:
+  - parse it with rprotobuf
+
+  - when primitive,
+    load based on primitive map
+  - when user specified object:
+      class_name.allocate
+      
+      for each ivar
+        load ivar value from object id
+        instance_variable_set("@#{ivar_name}", ivar_value)
+  - when collection
+    - create a proxy object to wrap collection
+    - use method missing to load the object based on object id
+    
+Creating a marshaled string:
+  - new protobuf
+  
+  - when primitive
+    - set primitive value
+  - when user specified object
+    - set class name
+    for each ivar
+      find / store based on object id
+      set ivar_name, object_id values
+  - when a collection
+    ?
+
+This stuff should be thread safe.  How to test against it?
