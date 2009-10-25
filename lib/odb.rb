@@ -11,6 +11,8 @@ module Odb
     end
   end
   
+  ProcessIdMap = Hash.new
+  
   using :Installer
   using :ObjectFormat, :file => "object_format.pb"
   using :ObjectIdCalculator
