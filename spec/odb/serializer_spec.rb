@@ -60,14 +60,25 @@ module Odb
         obj.instance_variable_set("@foo", true)
         obj.instance_variable_set("@bar", false)
         
-        Serializer.dump(obj).should == "class:Odb::UserDefined,@bar:#{object_id_for(false)},@foo:#{object_id_for(true)}"
+        Serializer.dump(obj).should include(",@bar:#{object_id_for(false)}")
+        Serializer.dump(obj).should include(",@foo:#{object_id_for(true)}")
       end
       
-      it "should be able to serialize a fixnum"
+      it "should be able to serialize a fixnum" do
+        Serializer.dump(1).should == Marshal.dump(1)
+      end
       
-      it "should be able to serialize a bignum"
+      it "should be able to serialize a bignum" do
+        bignum = 10_000_000_000_000_000_000
+        
+        Serializer.dump(bignum).should == Marshal.dump(bignum)
+      end
       
-      it "should be able to serialize a floating point number"
+      it "should be able to serialize a floating point number" do
+        float = 1.2
+        
+        Serializer.dump(float).should == Marshal.dump(float)
+      end
       
       it "should be able to serialize an array"
       

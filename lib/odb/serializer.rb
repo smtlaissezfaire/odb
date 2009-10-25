@@ -1,9 +1,12 @@
 module Odb
   class Serializer
-    PRIMITIVES = [
-      true,
-      false,
-      nil
+    PRIMITIVE_CLASSES = [
+      TrueClass,
+      FalseClass,
+      NilClass,
+      Fixnum,
+      Bignum,
+      Float
     ]
     
     def self.dump(obj)
@@ -48,7 +51,7 @@ module Odb
     end
   
     def primitve?(obj)
-      PRIMITIVES.include?(obj)
+      PRIMITIVE_CLASSES.include?(obj.class)
     end
   end
 end
