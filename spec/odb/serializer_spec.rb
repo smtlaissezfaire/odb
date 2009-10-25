@@ -2,8 +2,6 @@ require File.expand_path(File.dirname(__FILE__) + "/../spec_helper")
 
 module Odb
   describe Serializer do
-    class UserDefined; end
-    
     describe "serializing (with dump)" do
       it "should serialize a nil by marshaling it" do
         Serializer.dump(nil).should == Marshal.dump(nil)
@@ -17,17 +15,52 @@ module Odb
         Serializer.dump(true).should == Marshal.dump(true)
       end
       
+      class UserDefined; end
+      
       it "should serialize a user defined object" do
         obj = UserDefined.new
-        Serializer.dump(obj).should == "class:UserDefined"
+        Serializer.dump(obj).should == "class:Odb::UserDefined"
+      end
+      
+      class UserDefined2; end
+      
+      it "should use the correct class name" do
+        obj = UserDefined2.new
+        
+        Serializer.dump(obj).should == "class:Odb::UserDefined2"
+      end
+      
+      def object_id_for(obj)
+        ObjectIdCalculator.new(obj).object_id
       end
       
       it "should serialize an ivar, with a reference to an object id" do
-        pending 'todo'
         obj = UserDefined.new
         obj.instance_variable_set("@foo", true)
         
-        Serializer.new(obj).should == "class:UserDefined,@foo:<obj-id>"
+        Serializer.dump(obj).should == "class:Odb::UserDefined,@foo:#{object_id_for(true)}"
+      end
+      
+      it "should serialize an ivar, with a reference to an object id" do
+        obj = UserDefined.new
+        obj.instance_variable_set("@foo", false)
+        
+        Serializer.dump(obj).should == "class:Odb::UserDefined,@foo:#{object_id_for(false)}"
+      end
+      
+      it "should serialize the correct ivar" do
+        obj = UserDefined.new
+        obj.instance_variable_set("@bar", true)
+        
+        Serializer.dump(obj).should == "class:Odb::UserDefined,@bar:#{object_id_for(true)}"
+      end
+      
+      it "should serialize multiple ivars" do
+        obj = UserDefined.new
+        obj.instance_variable_set("@foo", true)
+        obj.instance_variable_set("@bar", false)
+        
+        Serializer.dump(obj).should == "class:Odb::UserDefined,@bar:#{object_id_for(false)},@foo:#{object_id_for(true)}"
       end
       
       it "should be able to serialize a fixnum"
