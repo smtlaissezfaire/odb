@@ -2,6 +2,13 @@ require File.expand_path(File.dirname(__FILE__) + "/../spec_helper")
 
 module Odb
   describe Serializer do
+    class UserDefined; end
+    class UserDefined2; end
+    
+    def object_id_for(obj)
+      ObjectIdCalculator.new(obj).object_id
+    end
+    
     describe "serializing (with dump)" do
       it "should serialize a nil by marshaling it" do
         Serializer.dump(nil).should == Marshal.dump(nil)
@@ -15,23 +22,15 @@ module Odb
         Serializer.dump(true).should == Marshal.dump(true)
       end
       
-      class UserDefined; end
-      
       it "should serialize a user defined object" do
         obj = UserDefined.new
         Serializer.dump(obj).should == "class:Odb::UserDefined"
       end
       
-      class UserDefined2; end
-      
       it "should use the correct class name" do
         obj = UserDefined2.new
         
         Serializer.dump(obj).should == "class:Odb::UserDefined2"
-      end
-      
-      def object_id_for(obj)
-        ObjectIdCalculator.new(obj).object_id
       end
       
       it "should serialize an ivar, with a reference to an object id" do
@@ -87,6 +86,50 @@ module Odb
       it "should be able to serialize a struct"
       
       it "should raise when serializing a file handle"
+    end
+    
+    describe "loading" do
+      it "should be able to load a user obj" do
+        str = "class:UserDefined"
+        
+        Serializer.load(str).should be_a_kind_of(UserDefined)
+      end
+      
+      it "should instantiate the correct class" do
+        str = "class:UserDefined2"
+        
+        Serializer.load(str).should be_a_kind_of(UserDefined2)
+      end
+      
+      it "should set an ivar" do
+        str = "class:UserDefined,@foo:#{object_id_for(true)}"
+        
+        obj = Serializer.load(str)
+        obj.instance_variable_get("@foo").should == true
+      end
+      
+      it "should use the correct ivar name" do
+        str = "class:UserDefined,@bar:#{object_id_for(true)}"
+        
+        obj = Serializer.load(str)
+        obj.instance_variable_get("@bar").should == true
+      end
+      
+      it "should be able to set multiple ivars" do
+        str = "class:UserDefined,@foo:#{object_id_for(true)},@bar:#{object_id_for(true)}"
+        
+        obj = Serializer.load(str)
+        obj.instance_variable_get("@foo").should == true
+        obj.instance_variable_get("@bar").should == true
+      end
+      
+      it "should use the correct value for the ivar" do
+        pending
+        str = "class:UserDefined,@foo:#{object_id_for(false)}"
+        
+        obj = Serializer.load(str)
+        obj.instance_variable_get("@foo").should == false
+      end
     end
   end
 end

@@ -15,11 +15,29 @@ module Odb
       new.dump(obj)
     end
     
+    def self.load(str)
+      new.load(str)
+    end
+    
     def dump(obj)
       if primitve?(obj)
         serialize_primitive(obj)
       else
         serialize_user_defined_object(obj)
+      end
+    end
+    
+    def load(str)
+      klass, *ivars = str.split(",")
+      _, klass_name = klass.split(":")
+      
+      returning eval(klass_name).new do |obj|
+        if ivars.any?
+          ivars.each do |ivar_group|
+            ivar_name, odb_object_id = ivar_group.split(":")
+            obj.instance_variable_set(ivar_name, true)
+          end
+        end
       end
     end
     
