@@ -1,3 +1,5 @@
+require 'facets/kernel/returning'
+
 module Odb
   class Serializer
     PRIMITIVE_CLASSES = [
@@ -28,13 +30,13 @@ module Odb
     end
   
     def serialize_user_defined_object(obj)
-      str = "class:#{obj.class}"
+      returning String.new do |str|
+        str << "class:#{obj.class}"
     
-      ivars_and_object_ids(obj).each do |var, object_id|
-        str << ",#{var}:#{object_id}"
+        ivars_and_object_ids(obj).each do |var, object_id|
+          str << ",#{var}:#{object_id}"
+        end
       end
-    
-      str
     end
   
     def ivars_and_object_ids(obj)
