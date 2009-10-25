@@ -21,21 +21,21 @@ module Odb
       end
     end
     
+  private
+  
     def serialize_primitive(obj)
       Marshal.dump(obj)
     end
-    
+  
     def serialize_user_defined_object(obj)
       str = "class:#{obj.class}"
-      
+    
       ivars_and_object_ids(obj).each do |var, object_id|
         str << ",#{var}:#{object_id}"
       end
-      
+    
       str
     end
-    
-  private
   
     def ivars_and_object_ids(obj)
       obj.instance_variables.map do |var|
