@@ -7,5 +7,6 @@ module Odb
     attr_accessor :root
   end
   
+  using :Serializer
   using :Version
 end
