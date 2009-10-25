@@ -7,6 +7,7 @@ module Odb
     attr_accessor :root
   end
   
+  using :ObjectIdCalculator
   using :Serializer
   using :Version
 end
