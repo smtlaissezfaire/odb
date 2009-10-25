@@ -16,6 +16,5 @@ module Odb
   using :Installer
   using :ObjectFormat, :file => "object_format.pb"
   using :ObjectIdCalculator
-  using :Serializer
   using :Version
 end
