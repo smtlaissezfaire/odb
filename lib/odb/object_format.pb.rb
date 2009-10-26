@@ -3,26 +3,29 @@
 # package Odb;
 # 
 # message ObjectFormat {
-#   enum ObjectType {
-#     PRIMITIVE   = 0;
-#     USER_OBJECT = 1;
-#     COLLECTION  = 2;
-#   }
-#   
-#   message UserObject {
-#     message InstanceVariable {
-#       required string name          = 1;
-#       required int32  object_id     = 2;
+#   message Primitive {
+#     enum Primitives {
+#       NIL   = 0;
+#       FALSE = 1;
+#       TRUE  = 2;
 #     }
-# 
-#     required string           class_name         = 1;
-#     repeated InstanceVariable instance_variables = 2;
+#   
+#     required Primitives primitive = 1;
 #   }
 #   
-#   required int32      id              = 1;
-#   required ObjectType object_type     = 2;
-#   required int32      data_length     = 3;
-#   required string     data            = 4;
+#   message UserDefinedObject {
+#     message InstanceVariable {
+#       required string name      = 1;
+#       required int32  object_id = 2;
+#     }
+#   
+#     required string           class_name = 1;
+#     repeated InstanceVariable ivars      = 2  [packed = true];
+#   }
+#   
+#   required int32             object_id = 1;
+#   optional Primitive         primitive = 2;
+#   optional UserDefinedObject data      = 3;
 # }
 
 require 'protobuf/message/message'
@@ -33,13 +36,17 @@ require 'protobuf/message/extend'
 module Odb
   class ObjectFormat < ::Protobuf::Message
     defined_in __FILE__
-    class ObjectType < ::Protobuf::Enum
+    class Primitive < ::Protobuf::Message
       defined_in __FILE__
-      PRIMITIVE = 0
-      USER_OBJECT = 1
-      COLLECTION = 2
+      class Primitives < ::Protobuf::Enum
+        defined_in __FILE__
+        NIL = 0
+        FALSE = 1
+        TRUE = 2
+      end
+      required :Primitives, :primitive, 1
     end
-    class UserObject < ::Protobuf::Message
+    class UserDefinedObject < ::Protobuf::Message
       defined_in __FILE__
       class InstanceVariable < ::Protobuf::Message
         defined_in __FILE__
@@ -47,11 +54,10 @@ module Odb
         required :int32, :object_id, 2
       end
       required :string, :class_name, 1
-      repeated :InstanceVariable, :instance_variables, 2
+      repeated :InstanceVariable, :ivars, 2, :packed => true
     end
-    required :int32, :id, 1
-    required :ObjectType, :object_type, 2
-    required :int32, :data_length, 3
-    required :string, :data, 4
+    required :int32, :object_id, 1
+    optional :Primitive, :primitive, 2
+    optional :UserDefinedObject, :data, 3
   end
 end
