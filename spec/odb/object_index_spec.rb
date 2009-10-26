@@ -5,7 +5,7 @@ module Odb
   describe ObjectIndex do
     before do
       FakeFS.activate!
-      Odb.init "/"
+      Odb.init ""
     end
     
     after do
@@ -15,7 +15,7 @@ module Odb
     
     describe "ids" do
       before do
-        @index = ObjectIndex.new("/odb")
+        @index = ObjectIndex.new("")
       end
       
       it "should be 1 with no lines in the file" do
@@ -27,7 +27,7 @@ module Odb
           f << "one\n"
           f << "two\n"
         }
-        
+
         @index.next_id.should == 3
       end
     end

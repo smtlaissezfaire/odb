@@ -13,6 +13,8 @@ module Odb
   
   ProcessIdMap = Hash.new
   
+  using :FileHelpers
+  using :Path
   using :Installer
   using :ObjectFormat, :file => "object_format.pb"
   using :ObjectIndex

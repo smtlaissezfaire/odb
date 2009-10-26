@@ -1,39 +1,23 @@
 module Odb
   class Installer
+    include FileHelpers
+    
     def self.install(path)
       new(path).install
     end
     
     def initialize(dir)
-      @base_dir = dir
+      @path = Path.new(dir)
     end
     
     def install
-      if file_exists? @base_dir, "odb"
+      if file_exists? @path.odb_dir
         raise LoadError, "ODB directory already exists!"
       end
-
-      mkdir @base_dir, "odb"
-      touch @base_dir, "odb", "objects"
-      touch @base_dir, "odb", "objects.idx"
-    end
-    
-  private
-  
-    def file_exists?(*args)
-      File.exists? join(*args)
-    end
-  
-    def mkdir(*args)
-      Dir.mkdir join(*args)
-    end
-  
-    def touch(*args)
-      FileUtils.touch join(*args)
-    end
-  
-    def join(*args)
-      File.join(*args)
+      
+      mkdir @path.odb_dir
+      touch @path.objects_file
+      touch @path.objects_index
     end
   end
 end

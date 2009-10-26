@@ -36,12 +36,12 @@ describe Odb do
     it "should create the objects file" do
       Odb.init "/"
       
-      File.file?("/odb/objects").should be_true
+      File.exists?("/odb/objects").should be_true
     end
     
     it "should create the objects.idx file" do
       Odb.init "/"
-      File.file?("/odb/objects.idx").should be_true
+      File.exists?("/odb/objects.idx").should be_true
     end
     
     it "should have nil as a pre-saved object"
