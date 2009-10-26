@@ -3,16 +3,12 @@
 # package Odb;
 # 
 # message ObjectFormat {
-#   message Primitive {
-#     enum Primitives {
-#       NIL   = 0;
-#       FALSE = 1;
-#       TRUE  = 2;
-#     }
-#   
-#     required Primitives primitive = 1;
+#   enum Primitive {
+#     NIL           = 0;
+#     FALSE         = 1;
+#     TRUE          = 2;
 #   }
-#   
+# 
 #   message UserDefinedObject {
 #     message InstanceVariable {
 #       required string name      = 1;
@@ -23,9 +19,10 @@
 #     repeated InstanceVariable ivars      = 2  [packed = true];
 #   }
 #   
-#   required int32             object_id = 1;
-#   optional Primitive         primitive = 2;
-#   optional UserDefinedObject data      = 3;
+#   required int32             object_id    = 1;
+#   required bool              is_primitive = 2;
+#   optional Primitive         primitive    = 3;
+#   optional UserDefinedObject data         = 4;
 # }
 
 require 'protobuf/message/message'
@@ -36,15 +33,11 @@ require 'protobuf/message/extend'
 module Odb
   class ObjectFormat < ::Protobuf::Message
     defined_in __FILE__
-    class Primitive < ::Protobuf::Message
+    class Primitive < ::Protobuf::Enum
       defined_in __FILE__
-      class Primitives < ::Protobuf::Enum
-        defined_in __FILE__
-        NIL = 0
-        FALSE = 1
-        TRUE = 2
-      end
-      required :Primitives, :primitive, 1
+      NIL = 0
+      FALSE = 1
+      TRUE = 2
     end
     class UserDefinedObject < ::Protobuf::Message
       defined_in __FILE__
@@ -57,7 +50,8 @@ module Odb
       repeated :InstanceVariable, :ivars, 2, :packed => true
     end
     required :int32, :object_id, 1
-    optional :Primitive, :primitive, 2
-    optional :UserDefinedObject, :data, 3
+    required :bool, :is_primitive, 2
+    optional :Primitive, :primitive, 3
+    optional :UserDefinedObject, :data, 4
   end
 end

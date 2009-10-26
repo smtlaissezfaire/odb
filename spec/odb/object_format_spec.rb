@@ -4,30 +4,22 @@ module Odb
   describe ObjectFormat do
     describe "primitives" do
       before do
-        @primitive = ObjectFormat::Primitive.new
+        @format = ObjectFormat.new
       end
       
       it "should be able to set a nil" do
-        @primitive.primitive = ObjectFormat::Primitive::Primitives::NIL
-        @primitive.primitive.should == ObjectFormat::Primitive::Primitives::NIL
+        @format.primitive = ObjectFormat::Primitive::NIL
+        @format.primitive.should == ObjectFormat::Primitive::NIL
       end
       
       it "should be able to set a false" do
-        @primitive.primitive = ObjectFormat::Primitive::Primitives::FALSE
-        @primitive.primitive.should == ObjectFormat::Primitive::Primitives::FALSE
+        @format.primitive = ObjectFormat::Primitive::FALSE
+        @format.primitive.should == ObjectFormat::Primitive::FALSE
       end
       
       it "should be able to set a true" do
-        @primitive.primitive = ObjectFormat::Primitive::Primitives::TRUE
-        @primitive.primitive.should == ObjectFormat::Primitive::Primitives::TRUE
-      end
-      
-      it "should require the primitive field" do
-        @primitive.primitive = ObjectFormat::Primitive::Primitives::TRUE
-        @primitive.should be_initialized
-        
-        @primitive.primitive = nil
-        @primitive.should_not be_initialized
+        @format.primitive = ObjectFormat::Primitive::TRUE
+        @format.primitive.should == ObjectFormat::Primitive::TRUE
       end
     end
     
@@ -108,6 +100,8 @@ module Odb
     describe "basic attributes" do
       before do
         @format = ObjectFormat.new
+        @format.object_id = 1
+        @format.is_primitive = true
       end
       
       describe "data" do
@@ -116,13 +110,6 @@ module Odb
         
           @format.data = obj
           @format.data.should == obj
-        end
-      
-        it "should be valid as a primitive" do
-          obj = ObjectFormat::Primitive.new
-
-          @format.primitive = obj
-          @format.primitive.should == obj
         end
       end
       
@@ -136,6 +123,17 @@ module Odb
         @format.should be_initialized
         
         @format.object_id = nil
+        @format.should_not be_initialized
+      end
+      
+      it "should require the boolean 'is_primitive' to be set" do
+        @format.is_primitive = false
+        @format.should be_initialized
+        
+        @format.is_primitive = true
+        @format.should be_initialized
+        
+        @format.is_primitive = nil
         @format.should_not be_initialized
       end
     end

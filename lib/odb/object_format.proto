@@ -1,16 +1,12 @@
 package Odb;
 
 message ObjectFormat {
-  message Primitive {
-    enum Primitives {
-      NIL   = 0;
-      FALSE = 1;
-      TRUE  = 2;
-    }
-  
-    required Primitives primitive = 1;
+  enum Primitive {
+    NIL           = 0;
+    FALSE         = 1;
+    TRUE          = 2;
   }
-  
+
   message UserDefinedObject {
     message InstanceVariable {
       required string name      = 1;
@@ -21,7 +17,8 @@ message ObjectFormat {
     repeated InstanceVariable ivars      = 2  [packed = true];
   }
   
-  required int32             object_id = 1;
-  optional Primitive         primitive = 2;
-  optional UserDefinedObject data      = 3;
+  required int32             object_id    = 1;
+  required bool              is_primitive = 2;
+  optional Primitive         primitive    = 3;
+  optional UserDefinedObject data         = 4;
 }

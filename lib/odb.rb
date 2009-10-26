@@ -18,5 +18,6 @@ module Odb
   using :Installer
   using :ObjectFormat, :file => "object_format.pb"
   using :ObjectIndex
+  using :Marshal
   using :Version
 end
