@@ -19,10 +19,11 @@
 #     repeated InstanceVariable ivars      = 2  [packed = true];
 #   }
 #   
-#   required int32             object_id    = 1;
-#   required bool              is_primitive = 2;
-#   optional Primitive         primitive    = 3;
-#   optional UserDefinedObject data         = 4;
+#   required int32             object_id      = 1;
+#   required bool              is_primitive   = 2;
+#   optional Primitive         primitive      = 3;
+#   optional string            primitive_data = 4;
+#   optional UserDefinedObject data           = 5;
 # }
 
 require 'protobuf/message/message'
@@ -52,6 +53,7 @@ module Odb
     required :int32, :object_id, 1
     required :bool, :is_primitive, 2
     optional :Primitive, :primitive, 3
-    optional :UserDefinedObject, :data, 4
+    optional :string, :primitive_data, 4
+    optional :UserDefinedObject, :data, 5
   end
 end

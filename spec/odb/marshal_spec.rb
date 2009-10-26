@@ -11,8 +11,8 @@ module Odb
         Odb::Marshal.dump(obj)
       end
       
-      def load(obj)
-        Odb::Marshal.load(obj)
+      def load(str)
+        Odb::Marshal.load(str)
       end
       
       it "should be able to serialize an object" do
@@ -55,11 +55,26 @@ module Odb
         dump_and_load(true).should equal(true)
       end
       
-      it "should be able to serialize & marshal a fixnum"
-
-      it "should be able to serialize & marshal a bignum"
+      it "should be able to serialize & marshal a fixnum" do
+        dump_and_load(1).should == 1
+      end
       
-      it "should be able to serialize & marshal a float"
+      it "should be able to serialize & marshal the number 2" do
+        dump_and_load(2).should == 2
+      end
+
+      it "should be able to serialize & marshal a bignum" do
+        # >> 10_000_000_000_000_000_000.class
+        # => Bignum
+        
+        num = 10_000_000_000_000_000_000
+        
+        dump_and_load(num).should == num
+      end
+      
+      it "should be able to serialize & marshal a float" do
+        dump_and_load(1.1).should == 1.1
+      end
       
       it "should be able to serialize & marshal an array"
       
