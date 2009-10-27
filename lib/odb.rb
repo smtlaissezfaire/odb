@@ -16,7 +16,7 @@ module Odb
   using :FileHelpers
   using :Path
   using :Installer
-  using :ObjectIndex
+  using :Object
   using :Marshal
   using :Version
 end

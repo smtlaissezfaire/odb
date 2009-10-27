@@ -16,7 +16,7 @@ module Odb
       end
       
       it "should be able to serialize an object" do
-        obj = Object.new
+        obj = ::Object.new
         dump_and_load(obj).class.should == Object
       end
       

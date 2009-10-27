@@ -2,7 +2,7 @@ require File.expand_path(File.dirname(__FILE__) + "/../spec_helper")
 require 'fakefs/safe'
 
 module Odb
-  describe ObjectIndex do
+  describe Object do
     before do
       FakeFS.activate!
       Odb.init ""
@@ -15,7 +15,7 @@ module Odb
     
     describe "ids" do
       before do
-        @index = ObjectIndex.new("")
+        @index = Object.new("")
       end
       
       it "should be 1 with no lines in the file" do

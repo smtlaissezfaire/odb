@@ -1,5 +1,5 @@
 module Odb
-  class ObjectIndex
+  class Object
     def initialize(odb_path)
       @path = Path.new(odb_path)
     end
