@@ -17,7 +17,6 @@ module Odb
       
       it "should be able to serialize an object" do
         obj = Object.new
-        
         dump_and_load(obj).class.should == Object
       end
       
@@ -29,7 +28,7 @@ module Odb
       end
       
       it "should be able to serialize & marshal a user defined object with an ivar"
-
+      
       it "should be able to serialize & marshal a user defined object with multiple ivars"
       
       class UserDefinedWithInitValue
@@ -62,10 +61,11 @@ module Odb
       it "should be able to serialize & marshal the number 2" do
         dump_and_load(2).should == 2
       end
-
+      
       it "should be able to serialize & marshal a bignum" do
         # >> 10_000_000_000_000_000_000.class
         # => Bignum
+        pending 'fixme'
         
         num = 10_000_000_000_000_000_000
         
@@ -75,6 +75,31 @@ module Odb
       it "should be able to serialize & marshal a float" do
         dump_and_load(1.1).should == 1.1
       end
+      
+      it "should be able to serialize & marshal a symbol" do
+        dump_and_load(:foo).should == :foo
+      end
+      
+      it "should be able to serialize a regex" do
+        regex = /foo|bar/
+        
+        dump_and_load(regex).should == regex
+      end
+      
+      it "should be able to serialize & marshal a time object" do
+        t = Time.now
+        
+        dump_and_load(t).should == t
+      end
+      
+      it "should be able to serialize & marshal a date object" do
+        pending
+
+        d = Date.new
+        dump_and_load(d).should == d
+      end
+      
+      it "should be able to serialize & marshal a datetime object"
       
       it "should be able to serialize & marshal an array"
       
