@@ -17,26 +17,38 @@ module Odb
       PRIMITIVE  = 0,
       USER_CLASS = 1
     ]
-
-    # [0, "NilClass",  primitive-obj]
-    # [1, "UserClass", ivar-hash]
-    def self.dump(obj)
-      klass = obj.class
-      
-      if PRIMITIVE_CLASSES.include?(klass)
-        BERT.encode(t[PRIMITIVE, klass.to_s, obj])
-      else
-        BERT.encode(t[USER_CLASS, klass.to_s])
-      end
-    end
     
-    def self.load(str)
-      type, klass, data = BERT.decode(str)
+    class << self
+      # [0, "NilClass",  primitive-obj]
+      # [1, "UserClass", ivar-hash]
+      def dump(obj)
+        klass = obj.class
       
-      if type == PRIMITIVE
-        data
-      else
-        eval(klass).allocate
+        if PRIMITIVE_CLASSES.include?(klass)
+          encode(t[PRIMITIVE, klass.to_s, obj])
+        else
+          encode(t[USER_CLASS, klass.to_s])
+        end
+      end
+    
+      def load(str)
+        type, klass, data = decode(str)
+      
+        if type == PRIMITIVE
+          data
+        else
+          eval(klass).allocate
+        end
+      end
+      
+    private
+    
+      def encode(tuple)
+        BERT.encode(tuple)
+      end
+      
+      def decode(str)
+        BERT.decode(str)
       end
     end
   end
