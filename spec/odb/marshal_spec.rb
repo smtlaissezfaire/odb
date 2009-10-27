@@ -1,7 +1,18 @@
 require File.expand_path(File.dirname(__FILE__) + "/../spec_helper")
+require 'fakefs/safe'
 
 module Odb
   describe Marshal do
+    before do
+      FakeFS.activate!
+      Odb.init ""
+    end
+    
+    after do
+      FakeFS::FileSystem.clear
+      FakeFS.deactivate!
+    end
+    
     describe "serialization" do
       def dump_and_load(obj)
         load(dump(obj))
@@ -28,14 +39,46 @@ module Odb
       end
       
       it "should be able to serialize & marshal a user defined object with an ivar" do
-        pending 'spec'
         obj = UserDefined.new
         obj.instance_variable_set("@foo", true)
         
         dump_and_load(obj).instance_variable_get("@foo").should == true
       end
       
-      it "should be able to serialize & marshal a user defined object with multiple ivars"
+      it "should set the correct value" do
+        obj = UserDefined.new
+        obj.instance_variable_set("@foo", false)
+        
+        dump_and_load(obj).instance_variable_get("@foo").should == false
+      end
+      
+      it "should set the correct ivar by name" do
+        obj = UserDefined.new
+        obj.instance_variable_set("@bar", true)
+        
+        dump_and_load(obj).instance_variable_get("@bar").should == true
+      end
+      
+      it "should be able to serialize & marshal a user defined object with multiple ivars" do
+        obj = UserDefined.new
+        obj.instance_variable_set("@foo", true)
+        obj.instance_variable_set("@bar", false)
+
+        loaded_obj = dump_and_load(obj)
+        loaded_obj.instance_variable_get("@foo").should == true
+        loaded_obj.instance_variable_get("@bar").should == false
+      end
+      
+      it "should use references by object ids with ivar values (should be able to serialize user-created references)" do
+        obj1 = UserDefined.new
+        oid  = Odb::Object.new("").write(obj1)
+        
+        obj2 = UserDefined.new
+        obj2.instance_variable_set "@reference", obj1
+        
+        loaded_obj2 = dump_and_load(obj2)
+        loaded_obj2.instance_variable_get("@reference").should be_a_kind_of(UserDefined)
+      end
       
       class UserDefinedWithInitValue
         def initialize(val1)

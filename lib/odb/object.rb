@@ -2,7 +2,7 @@ require 'facets/kernel/returning'
 
 module Odb
   class Object
-    def initialize(odb_path)
+    def initialize(odb_path="")
       @path = Path.new(odb_path)
     end
     
@@ -26,6 +26,13 @@ module Odb
         store_in_process_id_map(obj, oid)
         oid
       end
+    end
+    
+    def load_from_id(oid)
+      offset = File.read(@path.objects_index).split("\n")[oid - 1]
+      marshalled_string = File.read(@path.objects_file).split("\n")[offset.to_i - 1]
+      
+      Marshal.load(marshalled_string)
     end
     
   private
@@ -75,7 +82,7 @@ module Odb
     def line_count(file)
       lines = 0
       
-      File.read(file).each_line do |_|
+      File.readlines(file).each do |_|
         lines += 1
       end
       
