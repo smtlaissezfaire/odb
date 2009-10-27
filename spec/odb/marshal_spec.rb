@@ -27,7 +27,13 @@ module Odb
         dump_and_load(UserDefined.new).class.should == UserDefined
       end
       
-      it "should be able to serialize & marshal a user defined object with an ivar"
+      it "should be able to serialize & marshal a user defined object with an ivar" do
+        pending 'spec'
+        obj = UserDefined.new
+        obj.instance_variable_set("@foo", true)
+        
+        dump_and_load(obj).instance_variable_get("@foo").should == true
+      end
       
       it "should be able to serialize & marshal a user defined object with multiple ivars"
       
