@@ -1,5 +1,3 @@
-require 'facets/kernel/returning'
-
 module Odb
   class ObjectIndex
     def initialize(odb_path)
