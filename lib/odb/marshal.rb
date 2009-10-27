@@ -1,4 +1,5 @@
 require 'bert'
+require 'base64'
 
 module Odb
   module Marshal
@@ -44,11 +45,11 @@ module Odb
     private
     
       def encode(tuple)
-        BERT.encode(tuple)
+        Base64.encode64(BERT.encode(tuple))
       end
       
       def decode(str)
-        BERT.decode(str)
+        BERT.decode(Base64.decode64(str))
       end
     end
   end
