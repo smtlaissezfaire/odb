@@ -11,7 +11,7 @@ module Odb
     end
     
     def write obj
-      offset = index.write(obj)
+      offset = objects.write(obj)
       
       if tracked_object? obj
         index.replace(process_ids[obj], offset)

@@ -6,11 +6,6 @@ module Odb
       line_count objects_index
     end
 
-    def write(obj)
-      append_to_file objects_file, Marshal.dump(obj)
-      line_count     objects_file
-    end
-
     def replace(object_id, value)
       replace_line objects_index, object_id, "#{value}\n"
     end
