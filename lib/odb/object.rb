@@ -16,7 +16,7 @@ module Odb
       if tracked_object? obj
         index.replace(process_ids[obj], offset)
       else
-        process_ids[obj] = index.append(offset)
+        process_ids[obj] = index.add(offset)
       end
       
       process_ids[obj]

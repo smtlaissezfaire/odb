@@ -6,13 +6,13 @@ module Odb
       line_count objects_index
     end
 
-    def replace(object_id, value)
-      replace_line objects_index, object_id, "#{value}\n"
+    def add(*values)
+      append_to_file objects_index, "#{values.join(",")}\n"
+      line_count     objects_index
     end
 
-    def append(value)
-      append_to_file objects_index, "#{value}\n"
-      line_count     objects_index
+    def replace(object_id, *values)
+      replace_line objects_index, object_id, "#{values.join(",")}\n"
     end
 
     def [](oid)
