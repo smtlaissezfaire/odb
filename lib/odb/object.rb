@@ -2,9 +2,11 @@ module Odb
   class Object
     include FileHelpers
     
-    def initialize odb_path=""
-      @path = Path.new(odb_path)
+    def initialize odb_path = Odb.path
+      @path = odb_path
     end
+    
+    attr_reader :path
     
     def current_id
       line_count(@path.objects_index)

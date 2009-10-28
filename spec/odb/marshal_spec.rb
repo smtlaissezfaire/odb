@@ -5,7 +5,8 @@ module Odb
   describe Marshal do
     before do
       FakeFS.activate!
-      Odb.init ""
+      Odb.init "/"
+      Odb.path = "/"
     end
     
     after do
@@ -71,11 +72,11 @@ module Odb
       
       it "should use references by object ids with ivar values (should be able to serialize user-created references)" do
         obj1 = UserDefined.new
-        oid  = Odb::Object.new("").write(obj1)
+        oid  = Odb::Object.new.write(obj1)
         
         obj2 = UserDefined.new
         obj2.instance_variable_set "@reference", obj1
-        
+
         loaded_obj2 = dump_and_load(obj2)
         loaded_obj2.instance_variable_get("@reference").should be_a_kind_of(UserDefined)
       end

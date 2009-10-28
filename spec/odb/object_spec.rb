@@ -15,7 +15,7 @@ module Odb
     
     describe "ids" do
       before do
-        @index = Object.new("")
+        @index = Object.new(Path.new(""))
       end
       
       it "should be 1 with no lines in the file" do
@@ -32,9 +32,18 @@ module Odb
       end
     end
     
+    describe "path" do
+      it "should have the default path as the Odb path" do
+        Odb.path = "/foo/bar"
+        
+        Object.new.path.should == Odb::Path.new("/foo/bar")
+      end
+    end
+    
     describe "writing an object" do
       before do
-        @index = Object.new("")
+        Odb.path = "/"
+        @index = Object.new
       end
       
       describe "for a new, simple object" do
