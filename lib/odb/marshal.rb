@@ -36,16 +36,22 @@ module Odb
       def load(str)
         type, klass, data = decode(str)
       
-        if type == PRIMITIVE
-          data
-        else
-          returning eval(klass).allocate do |obj|
-            load_ivars(obj, data)
-          end
-        end
+        type == PRIMITIVE ?
+          load_primitive(klass, data) :
+          load_user_defined_class(klass, data)
       end
       
     private
+    
+      def load_primitive(_, data)
+        data
+      end
+      
+      def load_user_defined_class(klass_name, data)
+        returning eval(klass_name).allocate do |obj|
+          load_ivars(obj, data)
+        end
+      end
     
       def load_ivars(obj, data)
         ivars(data).each do |key, value|
