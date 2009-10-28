@@ -14,11 +14,11 @@ module Odb
       offset = index.write(obj)
       
       if tracked_object? obj
-        oid = object_id(obj)
+        oid = process_ids[obj]
         index.replace(oid, offset)
       else
         oid = index.append(offset)
-        store_in_process_id_map(obj, oid)
+        process_ids[obj] = oid
       end
       
       oid
@@ -40,13 +40,9 @@ module Odb
     def objects
       @objects ||= ObjectFile.new
     end
-  
-    def object_id obj
-      ProcessIdMap.get_oid(obj)
-    end
-  
-    def store_in_process_id_map obj, object_id
-      ProcessIdMap.set_oid(obj, object_id)
+
+    def process_ids
+      ProcessIdMap
     end
   
     def tracked_object? obj

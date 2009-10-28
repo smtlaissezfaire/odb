@@ -57,7 +57,7 @@ module Odb
         it "should add the id to the in-process map" do
           object_id = @index.write(@obj)
         
-          ProcessIdMap[@obj.object_id].should == object_id
+          ProcessIdMap[@obj].should == object_id
         end
       
         it "should write the object id to the objects.idx file" do
