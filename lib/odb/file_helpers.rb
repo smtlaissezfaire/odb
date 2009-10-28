@@ -15,5 +15,35 @@ module Odb
     def join *args
       File.join(*args)
     end
+    
+    def lines_of(file)
+      File.readlines(file)
+    end
+    
+    def line_count file
+      lines_of(file).size
+    end
+    
+    def line_at(file, line_num)
+      lines_of(file)[line_num - 1]
+    end
+    
+    def replace_line(file, line_number, replacement)
+      txt = ""
+      
+      File.readlines(file).each_with_index do |line, index|
+        if index == line_number - 1
+          txt << replacement
+        else
+          txt << line
+        end
+      end
+      
+      File.open(file, "w") { |f| f << txt }
+    end
+    
+    def append_to_file(file, contents)
+      File.open(file, "a") { |f| f << contents }
+    end
   end
 end

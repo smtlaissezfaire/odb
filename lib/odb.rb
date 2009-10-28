@@ -9,8 +9,7 @@ module Odb
     end
   end
   
-  ProcessIdMap = Hash.new
-  
+  using :ProcessIdMap
   using :FileHelpers
   using :Path
   using :Installer
