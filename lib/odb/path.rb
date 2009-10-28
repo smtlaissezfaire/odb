@@ -2,20 +2,30 @@ module Odb
   class Path
     include FileHelpers
     
-    def initialize start_dir
-      @start_dir = start_dir
+    def initialize file_system_path
+      @file_system_path = file_system_path
     end
     
+    attr_reader :file_system_path
+    
     def odb_dir
-      join @start_dir, "odb"
+      join @file_system_path, "odb"
     end
     
     def objects_file
-      join @start_dir, "odb", "objects"
+      join @file_system_path, "odb", "objects"
     end
     
     def objects_index
-      join @start_dir, "odb", "objects.idx"
+      join @file_system_path, "odb", "objects.idx"
+    end
+    
+    def ==(other)
+      if other.respond_to?(:file_system_path)
+        file_system_path == other.file_system_path
+      else
+        false
+      end
     end
   end
 end

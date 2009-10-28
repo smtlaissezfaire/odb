@@ -7,6 +7,12 @@ module Odb
     def init path = Dir.getwd
       Installer.install(path)
     end
+    
+    attr_reader :path
+    
+    def path=(path)
+      @path = path ? Odb::Path.new(path) : nil
+    end
   end
   
   using :ProcessIdMap
