@@ -14,14 +14,12 @@ module Odb
       offset = index.write(obj)
       
       if tracked_object? obj
-        oid = process_ids[obj]
-        index.replace(oid, offset)
+        index.replace(process_ids[obj], offset)
       else
-        oid = index.append(offset)
-        process_ids[obj] = oid
+        process_ids[obj] = index.append(offset)
       end
       
-      oid
+      process_ids[obj]
     end
     
     def load_from_id oid
