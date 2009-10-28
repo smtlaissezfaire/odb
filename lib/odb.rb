@@ -14,9 +14,11 @@ module Odb
       @path = path ? Odb::Path.new(path) : nil
     end
   end
-  
+
   using :ProcessIdMap
   using :FileHelpers
+  using :ObjectFile
+  using :ObjectIndexFile
   using :Path
   using :Installer
   using :Object

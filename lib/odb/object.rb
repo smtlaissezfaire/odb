@@ -3,7 +3,7 @@ module Odb
     include FileHelpers
     
     def current_id
-      line_count objects_index
+      index.current_id
     end
     
     def next_id
@@ -11,13 +11,13 @@ module Odb
     end
     
     def write obj
-      offset = write_to_object_file(obj)
+      offset = index.write(obj)
       
       if tracked_object? obj
         oid = object_id(obj)
-        replace_in_index_file(oid, offset)
+        index.replace(oid, offset)
       else
-        oid = write_to_index_file(offset)
+        oid = index.append(offset)
         store_in_process_id_map(obj, oid)
       end
       
@@ -25,24 +25,20 @@ module Odb
     end
     
     def load_from_id oid
-      offset            = line_at(objects_index, oid).to_i
-      marshalled_string = line_at(objects_file,  offset)
+      offset            = index[oid]
+      marshalled_string = objects[offset]
       
       Marshal.load(marshalled_string)
     end
     
   private
-  
-    def path
-      Odb.path
+
+    def index
+      @index_file ||= ObjectIndexFile.new
     end
-    
-    def objects_index
-      path.objects_index
-    end
-    
-    def objects_file
-      path.objects_file
+
+    def objects
+      @objects ||= ObjectFile.new
     end
   
     def object_id obj
@@ -55,20 +51,6 @@ module Odb
   
     def tracked_object? obj
       ProcessIdMap.tracked_object?(obj)
-    end
-  
-    def write_to_object_file obj
-      append_to_file objects_file, Marshal.dump(obj)
-      line_count     objects_file
-    end
-    
-    def replace_in_index_file object_id, offset
-      replace_line objects_index, object_id, "#{offset}\n"
-    end
-  
-    def write_to_index_file offset
-      append_to_file objects_index, "#{offset}\n"
-      line_count     objects_index
     end
   end
 end
