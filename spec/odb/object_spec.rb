@@ -5,7 +5,8 @@ module Odb
   describe Object do
     before do
       FakeFS.activate!
-      Odb.init ""
+      Odb.init "/"
+      Odb.path = "/"
     end
     
     after do
@@ -15,7 +16,7 @@ module Odb
     
     describe "ids" do
       before do
-        @index = Object.new(Path.new(""))
+        @index = Object.new
       end
       
       it "should be 1 with no lines in the file" do
@@ -29,14 +30,6 @@ module Odb
         }
 
         @index.next_id.should == 3
-      end
-    end
-    
-    describe "path" do
-      it "should have the default path as the Odb path" do
-        Odb.path = "/foo/bar"
-        
-        Object.new.path.should == Odb::Path.new("/foo/bar")
       end
     end
     
