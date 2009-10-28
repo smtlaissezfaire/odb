@@ -8,7 +8,7 @@ module Odb
     end
 
     def [](offset)
-      line_at(objects_file,  offset)
+      line_at(objects_file, offset)
     end
 
   private
