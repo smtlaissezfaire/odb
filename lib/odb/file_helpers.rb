@@ -1,18 +1,18 @@
 module Odb
   module FileHelpers
-    def file_exists?(*args)
+    def file_exists? *args
       File.exists? join(*args)
     end
 
-    def mkdir(*args)
+    def mkdir *args
       Dir.mkdir join(*args)
     end
 
-    def touch(*args)
+    def touch *args
       FileUtils.touch join(*args)
     end
 
-    def join(*args)
+    def join *args
       File.join(*args)
     end
   end

@@ -4,7 +4,7 @@ module Odb
   extend Using
   
   class << self
-    def init(path = Dir.getwd)
+    def init path = Dir.getwd
       Installer.install(path)
     end
   end

@@ -2,11 +2,11 @@ module Odb
   class Installer
     include FileHelpers
     
-    def self.install(path)
+    def self.install path
       new(path).install
     end
     
-    def initialize(dir)
+    def initialize dir
       @path = Path.new(dir)
     end
     

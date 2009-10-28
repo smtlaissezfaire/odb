@@ -2,7 +2,7 @@ module Odb
   class Path
     include FileHelpers
     
-    def initialize(start_dir)
+    def initialize start_dir
       @start_dir = start_dir
     end
     

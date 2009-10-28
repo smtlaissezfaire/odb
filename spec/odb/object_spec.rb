@@ -73,15 +73,15 @@ module Odb
           File.read("/odb/objects.idx").split("\n").size.should == 2
         end
         
-        def line_of(file, line_num)
+        def line_of file, line_num
           File.read(file).split("\n")[line_num.to_i]
         end
         
-        def index_file_line(line_num)
+        def index_file_line line_num
           line_of("/odb/objects.idx", line_num)
         end
         
-        def object_file_line(line_num)
+        def object_file_line line_num
           line_of("/odb/objects", line_num)
         end
         
@@ -117,15 +117,15 @@ module Odb
           pending 'write a functional test'
         end
         
-        def line_of(file, line_num)
+        def line_of file, line_num
           File.read(file).split("\n")[line_num.to_i]
         end
         
-        def index_file_line(line_num)
+        def index_file_line line_num
           line_of("/odb/objects.idx", line_num)
         end
         
-        def object_file_line(line_num)
+        def object_file_line line_num
           line_of("/odb/objects", line_num)
         end
         
@@ -157,7 +157,7 @@ module Odb
           }.should change { index_file_line(oid-1).to_i }.by(1)
         end
         
-        def length_of(file)
+        def length_of file
           File.readlines(file).size
         end
         

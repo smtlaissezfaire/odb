@@ -23,7 +23,7 @@ module Odb
     class << self
       # [0, "NilClass",  primitive-obj]
       # [1, "UserClass", ivar-hash]
-      def dump(obj)
+      def dump obj
         klass = obj.class
       
         if PRIMITIVE_CLASSES.include?(klass)
@@ -33,7 +33,7 @@ module Odb
         end
       end
     
-      def load(str)
+      def load str
         type, klass, data = decode(str)
       
         type == PRIMITIVE ?
@@ -43,23 +43,23 @@ module Odb
       
     private
     
-      def load_primitive(_, data)
+      def load_primitive _, data
         data
       end
       
-      def load_user_defined_class(klass_name, data)
+      def load_user_defined_class klass_name, data
         returning eval(klass_name).allocate do |obj|
           load_ivars(obj, data)
         end
       end
     
-      def load_ivars(obj, data)
+      def load_ivars obj, data
         ivars(data).each do |key, value|
           obj.instance_variable_set(key, value)
         end
       end
       
-      def ivars(data)
+      def ivars data
         returning Hash.new do |hash|
           data.each do |key, oid|
             hash[key] = Object.new("").load_from_id(oid)
@@ -67,7 +67,7 @@ module Odb
         end
       end
     
-      def ivars_for(obj)
+      def ivars_for obj
         returning Hash.new do |hash|
           obj.instance_variables.each do |variable|
             hash[variable] = Object.new("").write(obj.instance_variable_get(variable))
@@ -75,11 +75,11 @@ module Odb
         end
       end
     
-      def encode(tuple)
+      def encode tuple
         Base64.encode64(BERT.encode(tuple))
       end
       
-      def decode(str)
+      def decode str
         BERT.decode(Base64.decode64(str))
       end
     end

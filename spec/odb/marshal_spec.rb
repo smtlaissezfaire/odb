@@ -14,15 +14,15 @@ module Odb
     end
     
     describe "serialization" do
-      def dump_and_load(obj)
+      def dump_and_load obj
         load(dump(obj))
       end
       
-      def dump(obj)
+      def dump obj
         Odb::Marshal.dump(obj)
       end
       
-      def load(str)
+      def load str
         Odb::Marshal.load(str)
       end
       
@@ -81,7 +81,7 @@ module Odb
       end
       
       class UserDefinedWithInitValue
-        def initialize(val1)
+        def initialize val1
         end
       end
       
