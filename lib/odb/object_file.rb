@@ -11,6 +11,18 @@ module Odb
       line_at(objects_file, offset)
     end
 
+    # Fetch from the object file, starting with char +start+ to
+    # char +finish+.  Counting starts at with char 1 (not char 0)
+    # in the buffer
+    def fetch(start, finish)
+      start       = start - 1
+      total_chars = finish - start
+      
+      f = File.open(objects_file)
+      f.seek(start)
+      f.read(total_chars)
+    end
+
   private
 
     def objects_file
