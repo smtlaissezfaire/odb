@@ -1,5 +1,4 @@
 require File.expand_path(File.dirname(__FILE__) + "/../../spec_helper")
-require 'fakefs/safe'
 
 class Foo
   attr_accessor :bar
