@@ -1,27 +1,39 @@
 module Odb
   class ObjectIdFile
     include FileHelpers
+    
+    NEW_LINE = "\n"
 
     def write(object, start, finish)
       if object_id = ProcessIdMap[object]
-        str = "#{start},#{finish}"
-        str << "\n" if ProcessIdMap.size != 1
-
-        replace_line path.objects_index, object_id, str
+        write_existing_object(object_id, start, finish)
       else
-        File.open(path.objects_index, "a") do |f|
-          f << "\n" if !empty_file?(path.objects_index)
-          f << "#{start},#{finish}"
-        end
-   
-        line_num = File.readlines(path.objects_index).size
-   
-        ProcessIdMap[object] = line_num
+        write_new_object(object, start, finish)
       end
     end
 
   private
+  
+    def write_existing_object(object_id, start, finish)
+      str = format_offsets(start, finish)
+      str << NEW_LINE unless ProcessIdMap.size == 1
 
+      replace_line path.objects_index, object_id, str
+    end
+    
+    def write_new_object(object, start, finish)
+      str = ""
+      str << NEW_LINE unless empty_file?(path.objects_index)
+      str << format_offsets(start, finish)
+      
+      append_to_file path.objects_index, str
+      ProcessIdMap[object] = line_count(path.objects_index)
+    end
+  
+    def format_offsets(start, finish)
+      "#{start},#{finish}"
+    end
+  
     def empty_file?(file)
       File.size(file) == 0
     end
