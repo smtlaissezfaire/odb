@@ -26,4 +26,5 @@ module Odb
   using :Version
 
   using :ObjectDataFile
+  using :ObjectIdFile
 end

@@ -5,6 +5,7 @@ module Odb
     before do
       FakeFS.activate!
       Odb.init
+      Odb.path = ""
     end
 
     after do
@@ -47,7 +48,7 @@ module Odb
         Dir.mkdir("/foo/bar/odb")
         FileUtils.touch("/foo/bar/odb/objects")
 
-        Odb.stub!(:path).and_return "/foo/bar"
+        Odb.path = "/foo/bar"
         Marshal.stub!(:dump).and_return "content"
 
         @data_file.write(@obj)

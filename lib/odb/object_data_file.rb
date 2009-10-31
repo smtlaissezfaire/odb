@@ -23,7 +23,7 @@ module Odb
     end
 
     def path
-      @path = Path.new
+      @path = Odb.path
     end
   end
 end
