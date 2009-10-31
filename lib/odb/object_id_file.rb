@@ -16,7 +16,7 @@ module Odb
   
     def write_existing_object(object_id, start, finish)
       str = format_offsets(start, finish)
-      str << NEW_LINE unless ProcessIdMap.size == 1
+      str << NEW_LINE unless line_count(path.objects_index) == 1
 
       replace_line path.objects_index, object_id, str
     end

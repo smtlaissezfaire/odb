@@ -84,6 +84,24 @@ module Odb
 
         File.read("/odb/objects.idx").should == "3,4\n1,2"
       end
+      
+      it "should append the newline even when another object is not in the process map" do
+        File.open("/odb/objects.idx", "a") do |f|
+          f << "\n4,5"
+        end
+        
+        @id_file.write(@obj, 6,7)
+        
+        File.read("/odb/objects.idx").should == "6,7\n4,5"
+      end
+      
+      it "should not append \n to the last entry" do
+        new_obj = Object.new
+        
+        @id_file.write(new_obj, 4, 5)
+        
+        File.read("/odb/objects.idx").should == "1,3\n4,5"
+      end
     end
   end
 end
