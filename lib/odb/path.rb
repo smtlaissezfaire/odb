@@ -2,7 +2,7 @@ module Odb
   class Path
     include FileHelpers
     
-    def initialize file_system_path
+    def initialize(file_system_path = Odb.path)
       @file_system_path = file_system_path
     end
     

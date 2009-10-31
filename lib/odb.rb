@@ -24,4 +24,6 @@ module Odb
   using :Object
   using :Marshal
   using :Version
+
+  using :ObjectDataFile
 end
