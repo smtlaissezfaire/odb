@@ -57,5 +57,33 @@ module Odb
         Odb::ProcessIdMap[@obj].should == 2
       end
     end
+
+    describe "writing an existing object (one already in the process map" do
+      before do
+        @obj     = Object.new
+        @id_file = ObjectIdFile.new
+
+        File.open("/odb/objects.idx", "w") do |f|
+          f << "1,3"
+        end
+
+        ProcessIdMap[@obj] = 1
+      end
+
+      it "should write the data to the file" do
+        @id_file.write(@obj, 3, 7)
+
+        File.read("/odb/objects.idx").should == "3,7"
+      end
+
+      it "should not delete other data" do
+        other_object = Object.new
+        @id_file.write(other_object, 1, 2)
+
+        @id_file.write(@obj, 3, 4)
+
+        File.read("/odb/objects.idx").should == "3,4\n1,2"
+      end
+    end
   end
 end
