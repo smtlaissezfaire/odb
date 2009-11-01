@@ -13,94 +13,96 @@ module Odb
       FakeFS.deactivate!
     end
 
-    describe "writing a new object (one not in the process map)" do
-      before do
-        @obj     = Object.new
-        @id_file = ObjectIdFile.new
-      end
-
-      it "should write the offsets given" do
-        @id_file.write(@obj, 0, 2)
-
-        File.read("/odb/objects.idx").should == "0,2"
-      end
-
-      it "should write the correct offsets" do
-        @id_file.write(@obj, 3, 7)
-
-        File.read("/odb/objects.idx").should == "3,7"
-      end
-
-      it "should append to the file on a new line" do
-        File.open("/odb/objects.idx", "w") do |f|
-          f << "1,2"
+    describe "writing an object" do
+      describe "writing a new object (one not in the process map)" do
+        before do
+          @obj     = Object.new
+          @id_file = ObjectIdFile.new
         end
 
-        @id_file.write(@obj, 3, 4)
+        it "should write the offsets given" do
+          @id_file.write(@obj, 0, 2)
 
-        File.read("/odb/objects.idx").should == "1,2\n3,4"
-      end
-
-      it "should store the line number the process map" do
-        @id_file.write(@obj, 1, 2)
-
-        Odb::ProcessIdMap[@obj].should == 1
-      end
-
-      it "should store the correct id in the process map (the line number written to the file)" do
-        File.open("/odb/objects.idx", "w") do |f|
-          f << "1,2"
+          File.read("/odb/objects.idx").should == "0,2"
         end
 
-        @id_file.write(@obj, 1, 2)
+        it "should write the correct offsets" do
+          @id_file.write(@obj, 3, 7)
 
-        Odb::ProcessIdMap[@obj].should == 2
-      end
-    end
-
-    describe "writing an existing object (one already in the process map" do
-      before do
-        @obj     = Object.new
-        @id_file = ObjectIdFile.new
-
-        File.open("/odb/objects.idx", "w") do |f|
-          f << "1,3"
+          File.read("/odb/objects.idx").should == "3,7"
         end
 
-        ProcessIdMap[@obj] = 1
-      end
+        it "should append to the file on a new line" do
+          File.open("/odb/objects.idx", "w") do |f|
+            f << "1,2"
+          end
 
-      it "should write the data to the file" do
-        @id_file.write(@obj, 3, 7)
+          @id_file.write(@obj, 3, 4)
 
-        File.read("/odb/objects.idx").should == "3,7"
-      end
-
-      it "should not delete other data" do
-        other_object = Object.new
-        @id_file.write(other_object, 1, 2)
-
-        @id_file.write(@obj, 3, 4)
-
-        File.read("/odb/objects.idx").should == "3,4\n1,2"
-      end
-      
-      it "should append the newline even when another object is not in the process map" do
-        File.open("/odb/objects.idx", "a") do |f|
-          f << "\n4,5"
+          File.read("/odb/objects.idx").should == "1,2\n3,4"
         end
-        
-        @id_file.write(@obj, 6,7)
-        
-        File.read("/odb/objects.idx").should == "6,7\n4,5"
+
+        it "should store the line number the process map" do
+          @id_file.write(@obj, 1, 2)
+
+          Odb::ProcessIdMap[@obj].should == 1
+        end
+
+        it "should store the correct id in the process map (the line number written to the file)" do
+          File.open("/odb/objects.idx", "w") do |f|
+            f << "1,2"
+          end
+
+          @id_file.write(@obj, 1, 2)
+
+          Odb::ProcessIdMap[@obj].should == 2
+        end
       end
-      
-      it "should not append \n to the last entry" do
-        new_obj = Object.new
-        
-        @id_file.write(new_obj, 4, 5)
-        
-        File.read("/odb/objects.idx").should == "1,3\n4,5"
+
+      describe "writing an existing object (one already in the process map" do
+        before do
+          @obj     = Object.new
+          @id_file = ObjectIdFile.new
+
+          File.open("/odb/objects.idx", "w") do |f|
+            f << "1,3"
+          end
+
+          ProcessIdMap[@obj] = 1
+        end
+
+        it "should write the data to the file" do
+          @id_file.write(@obj, 3, 7)
+
+          File.read("/odb/objects.idx").should == "3,7"
+        end
+
+        it "should not delete other data" do
+          other_object = Object.new
+          @id_file.write(other_object, 1, 2)
+
+          @id_file.write(@obj, 3, 4)
+
+          File.read("/odb/objects.idx").should == "3,4\n1,2"
+        end
+
+        it "should append the newline even when another object is not in the process map" do
+          File.open("/odb/objects.idx", "a") do |f|
+            f << "\n4,5"
+          end
+
+          @id_file.write(@obj, 6,7)
+
+          File.read("/odb/objects.idx").should == "6,7\n4,5"
+        end
+
+        it "should not append \n to the last entry" do
+          new_obj = Object.new
+
+          @id_file.write(new_obj, 4, 5)
+
+          File.read("/odb/objects.idx").should == "1,3\n4,5"
+        end
       end
     end
   end
