@@ -2,7 +2,9 @@ require "using"
 
 module Odb
   extend Using
-  
+
+  class RecordNotFound < StandardError; end
+
   class << self
     def init path = Dir.getwd
       Installer.install(path)

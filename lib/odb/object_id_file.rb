@@ -4,6 +4,14 @@ module Odb
 
     NEW_LINE = "\n"
 
+    def read(id)
+      if line = lines_of(objects_index)[id]
+        line.split(",").map { |a| a.to_i }
+      else
+        raise RecordNotFound, "Couldn't find odb object id: #{id}"
+      end
+    end
+
     def write(object, start, finish)
       if object_id = ProcessIdMap[object]
         write_existing_object(object_id, start, finish)

@@ -104,6 +104,76 @@ module Odb
           File.read("/odb/objects.idx").should == "1,3\n4,5"
         end
       end
+
+      describe "getting offsets from an id (line number)" do
+        before do
+          @id_file = ObjectIdFile.new
+        end
+
+        it "should raise an error if the file is empty" do
+          lambda {
+            @id_file.read(0)
+          }.should raise_error(RecordNotFound, "Couldn't find odb object id: 0")
+        end
+
+        it "should use the correct id in the error" do
+          lambda {
+            @id_file.read(1)
+          }.should raise_error(RecordNotFound, "Couldn't find odb object id: 1")
+        end
+
+        it "should return a tuple from the file" do
+          File.open("/odb/objects.idx", "w") do |f|
+            f << "1,2"
+          end
+
+          @id_file.read(0).should == [1,2]
+        end
+
+        it "should return the correct values from the first line" do
+          File.open("/odb/objects.idx", "w") do |f|
+            f << "3,4"
+          end
+
+          @id_file.read(0).should == [3, 4]
+        end
+
+        it "should only read the first line when the first line is specified" do
+          File.open("/odb/objects.idx", "w") do |f|
+            f << "1,2\n3,4"
+          end
+
+          @id_file.read(0).should == [1,2]
+        end
+
+        it "should use the correct line" do
+          File.open("/odb/objects.idx", "w") do |f|
+            f << "1,2\n3,4"
+          end
+
+          @id_file.read(1).should == [3, 4]
+        end
+
+        it "should raise an error if there is no id in the file" do
+          File.open("/odb/objects.idx", "w") do |f|
+            f << "1,2\n3,4"
+          end
+
+          lambda {
+            @id_file.read(2)
+          }.should raise_error(RecordNotFound, "Couldn't find odb object id: 2")
+        end
+
+        it "should raise the correct error if there is no id in the file" do
+          File.open("/odb/objects.idx", "w") do |f|
+            f << "1,2\n3,4"
+          end
+
+          lambda {
+            @id_file.read(3)
+          }.should raise_error(RecordNotFound, "Couldn't find odb object id: 3")
+        end
+      end
     end
   end
 end
