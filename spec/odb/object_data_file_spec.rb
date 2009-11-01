@@ -90,5 +90,95 @@ module Odb
         @data_file.write(@obj).should == [3, 6]
       end
     end
+
+    describe "reading" do
+      before do
+        @data_file = ObjectDataFile.new
+      end
+
+      it "should be able to get data from the offsets 0,1" do
+        File.open("/odb/objects", "w") do |f|
+          f << "a"
+        end
+
+        @data_file.read(0, 1).should == "a"
+      end
+
+      it "should read the correct data from offsets 0,1" do
+        File.open("/odb/objects", "w") do |f|
+          f << "b"
+        end
+
+        @data_file.read(0, 1).should == "b"
+      end
+
+      it "should only read the data specified in the offset" do
+        File.open("/odb/objects", "w") do |f|
+          f << "ab"
+        end
+
+        @data_file.read(0, 1).should == "a"
+      end
+
+      it "should use the correct end offset" do
+        File.open("/odb/objects", "w") do |f|
+          f << "abc"
+        end
+
+        @data_file.read(0, 3).should == "abc"
+      end
+
+      it "should use the correct start offset" do
+        File.open("/odb/objects", "w") do |f|
+          f << "abc"
+        end
+
+        @data_file.read(1, 3).should == "bc"
+      end
+
+      it "should raise an error if it can't find the data" do
+        lambda {
+          @data_file.read(0, 1)
+        }.should raise_error(ObjectDataFile::DataNotFound, "Couldn't find data between offsets 0, 1")
+      end
+
+      it "should use the correct offsets" do
+        lambda {
+          @data_file.read(1, 2)
+        }.should raise_error(ObjectDataFile::DataNotFound, "Couldn't find data between offsets 1, 2")
+      end
+
+      it "should raise if it can't find the data" do
+        File.open("/odb/objects", "w") do |f|
+          f << "abc"
+        end
+
+        lambda {
+          @data_file.read(5, 7)
+        }.should raise_error(ObjectDataFile::DataNotFound, "Couldn't find data between offsets 5, 7")
+      end
+
+      it "should use the correct numbers in the error message" do
+        File.open("/odb/objects", "w") do |f|
+          f << "abc"
+        end
+
+        lambda {
+          @data_file.read(7, 10)
+        }.should raise_error(ObjectDataFile::DataNotFound, "Couldn't find data between offsets 7, 10")
+      end
+
+      it "should raise an error when given a start value greater than an end value" do
+        lambda {
+          @data_file.read(10, 7)
+        }.should raise_error(ObjectDataFile::InvalidDataOffset, "start value of data must be before the end value")
+      end
+
+      it "should raise an error if the start value is equal to the end value" do
+        lambda {
+          @data_file.read(7, 7)
+        }.should raise_error(ObjectDataFile::InvalidDataOffset, "start value of data must be before the end value")
+      end
+    end
   end
 end
