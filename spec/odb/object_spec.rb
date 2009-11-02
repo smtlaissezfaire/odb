@@ -13,6 +13,50 @@ module Odb
       FakeFS.deactivate!
     end
     
+    describe "class helpers" do
+      describe "write" do
+        before do
+          @instance = mock(Odb::Object, :write => nil)
+          Odb::Object.stub!(:new).and_return @instance
+
+          @obj = ::Object.new
+        end
+
+        it "should create a new instance" do
+          Odb::Object.should_receive(:new).and_return @instance
+
+          Odb::Object.write(@obj)
+        end
+
+        it "should call the instances write method, passing the object" do
+          @instance.should_receive(:write).with(@obj)
+
+          Odb::Object.write(@obj)
+        end
+      end
+
+      describe "read" do
+        before do
+          @instance = mock(Odb::Object, :read => nil)
+          Odb::Object.stub!(:new).and_return @instance
+
+          @object_id = 1
+        end
+
+        it "should create a new instance" do
+          Odb::Object.should_receive(:new).and_return @instance
+
+          Odb::Object.read(@object_id)
+        end
+
+        it "should call the instances read method, passing the object" do
+          @instance.should_receive(:read).with(@object_id)
+
+          Odb::Object.read(@object_id)
+        end
+      end
+    end
+    
     describe "writing an object" do
       before do
         Odb.path = "/"
