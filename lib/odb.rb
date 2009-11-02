@@ -27,4 +27,5 @@ module Odb
 
   using :ObjectDataFile
   using :ObjectIdFile
+  using :Proxy
 end
