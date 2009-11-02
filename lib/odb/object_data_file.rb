@@ -21,20 +21,15 @@ module Odb
     end
 
     def write(obj)
-      size_before_and_after path.objects_file do |file|
-        append_to_file(file, Marshal.dump(obj))
-      end
+      dumped_data = Marshal.dump(obj)
+      last_byte   = size(path.objects_file)
+
+      append_to_file(path.objects_file, dumped_data)
+
+      [last_byte, last_byte + dumped_data.size]
     end
 
   private
-
-    def size_before_and_after(file)
-      before = size(file)
-      yield file
-      after = size(file)
-
-      [before, after]
-    end
 
     def size(file)
       File.size(file)
