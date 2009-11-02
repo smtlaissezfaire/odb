@@ -5,14 +5,16 @@ module Odb
         Odb::Object.read(super)
       end
 
-      def each
-        super do |val|
-          yield(self[val])
-        end
+      def each(&block)
+        to_a.each(&block)
       end
 
       def object_ids
         self
+      end
+
+      def to_a
+        super.map { |e| self[e] }
       end
     end
   end
