@@ -9,6 +9,14 @@ module Odb
         to_a.each(&block)
       end
 
+      def first
+        self[0]
+      end
+
+      def last
+        self[self.size - 1]
+      end
+
       def object_ids
         self
       end

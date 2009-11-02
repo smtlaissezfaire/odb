@@ -89,6 +89,26 @@ module Odb
           @array.to_a.should == [@obj1, @obj2]
         end
       end
+
+      describe "first & last" do
+        before do
+          @obj1 = "foobar"
+          @obj2 = "baz"
+
+          @object_id_one = Odb::Object.write(@obj1)
+          @object_id_two = Odb::Object.write(@obj2)
+
+          @array = Odb::Proxy::Array.new([@object_id_one, @object_id_two])
+        end
+
+        it "should return the first element in the set" do
+          @array.first.should == @obj1
+        end
+
+        it "should return the last element in the set" do
+          @array.last.should == @obj2
+        end
+      end
     end
   end
 end
