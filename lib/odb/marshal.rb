@@ -42,7 +42,7 @@ module Odb
     
       case type
       when PRIMITIVE
-        load_primitive(klass, data)
+        load_primitive(data)
       when PROXY_CLASS
         load_proxy_class(data)
       else
@@ -72,7 +72,7 @@ module Odb
       obj.map { |element| Odb::Object.write(element) }
     end
   
-    def load_primitive _, data
+    def load_primitive(data)
       data
     end
     
