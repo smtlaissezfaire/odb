@@ -1,5 +1,4 @@
 require 'bert'
-require 'base64'
 require 'facets/kernel/returning'
 
 module Odb
@@ -69,11 +68,11 @@ module Odb
     end
   
     def encode tuple
-      Base64.encode64(BERT.encode(tuple))
+      BERT.encode(tuple)
     end
     
     def decode str
-      BERT.decode(Base64.decode64(str))
+      BERT.decode(str)
     end
     
     def object
