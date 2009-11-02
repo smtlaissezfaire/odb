@@ -17,12 +17,14 @@ module Odb
         self[self.size - 1]
       end
 
-      def object_ids
-        self
-      end
+      alias_method :object_ids, :to_a
 
       def to_a
         super.map { |e| self[e] }
+      end
+
+      def inspect
+        object_ids.map { |id| "object_id:#{id}" }.inspect.gsub('"', '')
       end
     end
   end
