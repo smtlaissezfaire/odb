@@ -23,7 +23,7 @@ describe "read and write simple objects" do
       
       oid = Odb::Object.new.write(@obj)
       
-      object = Odb::Object.new.load_from_id oid
+      object = Odb::Object.new.read oid
       object.should be_a_kind_of(Foo)
       object.bar.should == 17
     end

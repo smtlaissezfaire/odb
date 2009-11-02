@@ -7,7 +7,7 @@ module Odb
       process_ids[obj]
     end
     
-    def load_from_id oid
+    def read oid
       Marshal.load(object_data_file.read(*index.read(oid)))
     end
     

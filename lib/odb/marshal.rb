@@ -115,7 +115,7 @@ module Odb
       def ivars
         returning Hash.new do |hash|
           @data.each do |key, oid|
-            hash[key] = object_loader.load_from_id(oid)
+            hash[key] = object_loader.read(oid)
           end
         end
       end
