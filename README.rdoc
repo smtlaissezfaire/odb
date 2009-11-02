@@ -48,7 +48,8 @@
     => #<Foo:0x10115d018 @bar="a_value">
     >> a[3]
 
-== Bugs, Limitations
+== Bugs
 
 - User written C classes not supported
 - Any class which doesn't return the class name with "to_s" won't be loadable.
+- No support for anything Marshal doesn't support: Classes, Procs, Lambdas, Methods, UnboundMethods
