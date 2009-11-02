@@ -2,41 +2,23 @@ module Odb
   class Object
     include FileHelpers
     
-    def current_id
-      index.current_id
-    end
-    
-    def next_id
-      current_id + 1
-    end
-    
     def write obj
-      offset = objects.write(obj)
-      
-      if tracked_object? obj
-        index.replace(process_ids[obj], offset)
-      else
-        process_ids[obj] = index.add(offset)
-      end
-      
+      index.write(obj, *object_data_file.write(obj))
       process_ids[obj]
     end
     
     def load_from_id oid
-      offset            = index[oid]
-      marshalled_string = objects[offset]
-      
-      Marshal.load(marshalled_string)
+      Marshal.load(object_data_file.read(*index.read(oid)))
     end
     
   private
 
     def index
-      @index_file ||= ObjectIndexFile.new
+      @index_file ||= ObjectIdFile.new
     end
 
-    def objects
-      @objects ||= ObjectFile.new
+    def object_data_file
+      @objects ||= ObjectDataFile.new
     end
 
     def process_ids

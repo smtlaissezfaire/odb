@@ -43,6 +43,7 @@ module Odb
       end
 
       it "should update the line based on the object id + value" do
+        pending 'about to be deleted'
         File.open("/odb/objects.idx", "w") { |f| f << "one\n" }
 
         @index.replace(1, "two")
@@ -50,6 +51,7 @@ module Odb
       end
 
       it "should replace with several values" do
+        pending 'about to be deleted'
         File.open("/odb/objects.idx", "w") { |f| f << "one\n" }
 
         @index.replace(1, 2, 3)

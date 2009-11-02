@@ -42,10 +42,10 @@ module Odb
           File.read("/odb/objects.idx").should == "1,2\n3,4"
         end
 
-        it "should store the line number the process map" do
+        it "should store the line number the process map (minus one)" do
           @id_file.write(@obj, 1, 2)
 
-          Odb::ProcessIdMap[@obj].should == 1
+          Odb::ProcessIdMap[@obj].should == 0
         end
 
         it "should store the correct id in the process map (the line number written to the file)" do
@@ -55,7 +55,7 @@ module Odb
 
           @id_file.write(@obj, 1, 2)
 
-          Odb::ProcessIdMap[@obj].should == 2
+          Odb::ProcessIdMap[@obj].should == 1
         end
       end
 
@@ -68,7 +68,7 @@ module Odb
             f << "1,3"
           end
 
-          ProcessIdMap[@obj] = 1
+          ProcessIdMap[@obj] = 0
         end
 
         it "should write the data to the file" do

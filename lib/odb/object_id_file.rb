@@ -39,7 +39,7 @@ module Odb
     end
 
     def write_to_process_map(object)
-      ProcessIdMap[object] = line_count(objects_index)
+      ProcessIdMap[object] = line_count(objects_index) - 1
     end
 
     def format_offsets(start, finish)

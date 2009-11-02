@@ -13,25 +13,6 @@ module Odb
       FakeFS.deactivate!
     end
     
-    describe "ids" do
-      before do
-        @index = Object.new
-      end
-      
-      it "should be 1 with no lines in the file" do
-        @index.next_id.should == 1
-      end
-      
-      it "should have the next id based on the file length of the objects.idx file" do
-        File.open("/odb/objects.idx", "w") { |f|
-          f << "one\n"
-          f << "two\n"
-        }
-
-        @index.next_id.should == 3
-      end
-    end
-    
     describe "writing an object" do
       before do
         Odb.path = "/"
@@ -60,9 +41,10 @@ module Odb
         end
       
         it "should write the object id to the objects.idx file" do
+          Marshal.stub!(:dump).and_return "foo"
           object_id = @index.write(@obj)
 
-          File.read("/odb/objects.idx").should == "#{object_id}\n"
+          File.read("/odb/objects.idx").should == "0,3"
         end
         
         it "should be able to write two different objects to the objects.idx file" do
@@ -130,32 +112,16 @@ module Odb
           line_of("/odb/objects", line_num)
         end
         
-        it "should return the oid based on the offset in the index file, not the objects file" do
-          File.open("/odb/objects", "w") { |f| f << "stuff\nfoo\n\bar\n"}
-          
-          oid = @index.write(@obj)
-          
-          oid.should == File.read("/odb/objects.idx").split("\n").size
-        end
-        
         it "should return the oid based on the offset in the index file, not the objects file when updated" do
           File.open("/odb/objects", "w") { |f| f << "stuff\nfoo\n\bar\n"}
           
           oid1 = @index.write(@obj)
           oid2 = @index.write(@obj)
           
-          length = File.read("/odb/objects.idx").split("\n").size
+          length = File.read("/odb/objects.idx").split("\n").size - 1
           
           oid1.should == length
           oid2.should == length
-        end
-        
-        it "should set the new offset in the index file (increase it by 1, assuming no concurrent access)" do
-          oid = @index.write(@obj)
-          
-          lambda {
-            @index.write(@obj)
-          }.should change { index_file_line(oid-1).to_i }.by(1)
         end
         
         def length_of file
@@ -164,9 +130,12 @@ module Odb
         
         it "should update the index with the new location" do
           object_id = @index.write(@obj)
+
+          new_start = File.size("/odb/objects")
           @index.write(@obj)
+          finish = File.size("/odb/objects")
           
-          line_of("/odb/objects.idx", object_id - 1).to_i.should == length_of("/odb/objects")
+          line_of("/odb/objects.idx", object_id).should == "#{new_start},#{finish}"
         end
       end
     end

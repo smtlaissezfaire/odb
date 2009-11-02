@@ -32,7 +32,7 @@ module Odb
       txt = ""
       
       File.readlines(file).each_with_index do |line, index|
-        if index == line_number - 1
+        if index == line_number
           txt << replacement
         else
           txt << line
