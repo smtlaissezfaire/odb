@@ -2,21 +2,23 @@ module Odb
   class Object
     include FileHelpers
 
-    def self.write(obj)
-      new.write(obj)
+    class << self
+      def read(object_id)
+        new.read(object_id)
+      end
+
+      def write(obj)
+        new.write(obj)
+      end
     end
 
-    def self.read(object_id)
-      new.read(object_id)
+    def read(oid)
+      Marshal.load(object_data_file.read(*index.read(oid)))
     end
 
-    def write obj
+    def write(obj)
       index.write(obj, *object_data_file.write(obj))
       process_ids[obj]
-    end
-
-    def read oid
-      Marshal.load(object_data_file.read(*index.read(oid)))
     end
 
   private
