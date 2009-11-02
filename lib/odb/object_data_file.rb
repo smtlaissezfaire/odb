@@ -11,7 +11,7 @@ module Odb
       end
 
       File.open(path.objects_file) do |f|
-        if finish > f.size
+        if finish > File.size(path.objects_file)
           raise(DataNotFound, "Couldn't find data between offsets #{start}, #{finish}")
         end
 
