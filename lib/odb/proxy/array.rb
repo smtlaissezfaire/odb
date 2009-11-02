@@ -5,7 +5,7 @@ module Odb
         Odb::Object.read(super)
       end
 
-      def each(&block)
+      def each
         super do |val|
           yield(self[val])
         end
