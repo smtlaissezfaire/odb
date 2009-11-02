@@ -102,7 +102,7 @@ module Odb
       end
     
       def klass
-        eval(@klass_name)
+        Object.instance_eval("::#{@klass_name}", __FILE__, __LINE__)
       end
       
       def load_ivars obj

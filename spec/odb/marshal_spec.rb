@@ -28,7 +28,7 @@ module Odb
       
       it "should be able to serialize an object" do
         obj = ::Object.new
-        dump_and_load(obj).class.should == Object
+        dump_and_load(obj).class.should == ::Object
       end
       
       class UserDefined
