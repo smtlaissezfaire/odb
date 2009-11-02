@@ -19,7 +19,6 @@ module Odb
 
   using :ProcessIdMap
   using :FileHelpers
-  using :ObjectIndexFile
   using :Path
   using :Installer
   using :Object
