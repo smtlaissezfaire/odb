@@ -54,7 +54,7 @@ module Odb
       klass = obj.class
     
       if PRIMITIVE_CLASSES.include?(klass)
-        encode(t[PRIMITIVE, klass.to_s, obj])
+        encode(t[PRIMITIVE, nil, obj])
       elsif PROXY_CLASSES.include?(klass)
         encode(t[PROXY_CLASS, klass.to_s, proxy_data(obj)])
       else
