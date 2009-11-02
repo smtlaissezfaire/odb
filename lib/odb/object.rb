@@ -24,9 +24,5 @@ module Odb
     def process_ids
       ProcessIdMap
     end
-  
-    def tracked_object? obj
-      ProcessIdMap.tracked_object?(obj)
-    end
   end
 end

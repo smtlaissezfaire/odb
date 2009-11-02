@@ -24,10 +24,6 @@ module Odb
       lines_of(file).size
     end
     
-    def line_at(file, line_num)
-      lines_of(file)[line_num - 1]
-    end
-    
     def replace_line(file, line_number, replacement)
       txt = ""
       
