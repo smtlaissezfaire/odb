@@ -21,6 +21,7 @@ module Odb
       TrueClass,
       Fixnum,
       Float,
+      String,
       Symbol,
       Time,
       Regexp

@@ -135,6 +135,10 @@ module Odb
         dump_and_load(regex).should == regex
       end
       
+      it "should be able to serialize a string" do
+        dump_and_load("foobar").should == "foobar"
+      end
+
       it "should be able to serialize & marshal a time object" do
         t = Time.now
         
