@@ -1,0 +1,54 @@
+
+== ODB
+
+  The ruby object database
+
+== Installation
+
+  ./bin/odb-install
+
+== Usage
+=== Process 1
+
+    # Set up ODB
+    require 'lib/odb'
+    Odb.path = "."
+
+    # Load your classes, data
+    class Foo
+      attr_accessor :bar
+    end
+
+    f = Foo.new
+    f.bar = "a_value"
+    a = [1, "bar", f]
+
+    # store your data
+    Odb::Object.write(a) #=> 4 (the object_id)
+
+=== Process 2
+
+    # Set up ODB
+    require 'lib/odb'
+    Odb.path = "."
+
+    # Load your classes
+    class Foo
+      attr_accessor :bar
+    end
+
+    # Read + Write your data
+    >> a = Odb::Object.read(4)
+    => [object_id:0, object_id:1, object_id:3]
+    >> a[0]
+    => 1
+    >> a[1]
+    => "bar"
+    >> a[2]
+    => #<Foo:0x10115d018 @bar="a_value">
+    >> a[3]
+
+== Bugs, Limitations
+
+- User written C classes not supported
+- Any class which doesn't return the class name with "to_s" won't be loadable.
