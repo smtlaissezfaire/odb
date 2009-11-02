@@ -154,8 +154,28 @@ module Odb
       
       it "should be able to serialize & marshal a datetime object"
       
-      it "should be able to serialize & marshal an array"
-      
+      describe "serializing an array" do
+        it "should be able to serialize & marshal an array" do
+          array = [1,2,3]
+
+          returned_array = dump_and_load(array)
+          returned_array.should be_a_kind_of(Odb::Proxy::Array)
+          returned_array[0].should == 1
+          returned_array[1].should == 2
+          returned_array[2].should == 3
+        end
+
+        it "should store the object ids" do
+          obj = "foo"
+          id = Odb::Object.write(obj)
+
+          array = [obj]
+
+          returned_array = dump_and_load(array)
+          returned_array.object_ids.should == [id]
+        end
+      end
+
       it "should be able to serialize & marshal an set"
       
       it "should be able to serialize & marshal a hash"

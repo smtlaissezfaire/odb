@@ -27,17 +27,27 @@ module Odb
       Regexp
     ]
     
+    PROXY_CLASSES = [
+      Array
+    ]
+
     TYPES = [
-      PRIMITIVE  = 0,
-      USER_CLASS = 1
+      PRIMITIVE   = 0,
+      USER_CLASS  = 1,
+      PROXY_CLASS = 2
     ]
     
     def load str
       type, klass, data = decode(str)
     
-      type == PRIMITIVE ?
-        load_primitive(klass, data) :
+      case type
+      when PRIMITIVE
+        load_primitive(klass, data)
+      when PROXY_CLASS
+        load_proxy_class(data)
+      else
         load_user_defined_class(klass, data)
+      end
     end
     
     def dump obj
@@ -45,12 +55,22 @@ module Odb
     
       if PRIMITIVE_CLASSES.include?(klass)
         encode(t[PRIMITIVE, klass.to_s, obj])
+      elsif PROXY_CLASSES.include?(klass)
+        encode(t[PROXY_CLASS, klass.to_s, proxy_data(obj)])
       else
         encode(t[USER_CLASS, klass.to_s, ivars_for(obj)])
       end
     end
       
   private
+
+    def load_proxy_class(data)
+      Odb::Proxy::Array.new(data)
+    end
+
+    def proxy_data(obj)
+      obj.map { |element| Odb::Object.write(element) }
+    end
   
     def load_primitive _, data
       data

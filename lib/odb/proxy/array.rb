@@ -10,6 +10,10 @@ module Odb
           yield(self[val])
         end
       end
+
+      def object_ids
+        self
+      end
     end
   end
 end
