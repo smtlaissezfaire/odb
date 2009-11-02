@@ -20,7 +20,7 @@ module Odb
       alias_method :object_ids, :to_a
 
       def to_a
-        super.map { |e| self[e] }
+        object_ids.map { |e| self[e] }
       end
 
       def inspect
