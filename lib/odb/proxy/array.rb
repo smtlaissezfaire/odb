@@ -2,9 +2,10 @@ module Odb
   module Proxy
     class Array
       include Enumerable
+      include ObjectCache
 
       def initialize(object_ids = [])
-        @object_cache = {}
+        super
         @object_ids = Array(object_ids)
       end
 
@@ -48,29 +49,6 @@ module Odb
           str << @object_ids.map { |id| "object_id:#{id}" }.inspect.gsub('"', '')
           str << ">"
         end
-      end
-
-      def reload
-        @object_cache = {}
-      end
-
-    private
-
-      def lookup_element(object_id)
-        if obj = object_cache(object_id)
-          obj
-        elsif obj = Odb::Object.read(object_id)
-          cache_object(obj, object_id)
-          obj
-        end
-      end
-
-      def object_cache(object_id)
-        @object_cache[object_id]
-      end
-
-      def cache_object(obj, object_id)
-        @object_cache[object_id] = obj
       end
     end
   end
