@@ -3,6 +3,10 @@
 
 The ruby object database
 
+== Notes:
+
+This stuff is still in pre-alpha.  Don't expect it to work for anything useful just quite yet.
+
 == Installation
 
   ./bin/odb-install
