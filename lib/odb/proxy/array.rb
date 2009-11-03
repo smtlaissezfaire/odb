@@ -1,41 +1,51 @@
 module Odb
   module Proxy
-    class Array < ::Array
-      def initialize(array = [])
+    class Array
+      include Enumerable
+
+      def initialize(object_ids = [])
         @object_cache = {}
-        super
+        @object_ids = Array(object_ids)
+      end
+
+      attr_reader :object_ids
+
+      def <<(object_id)
+        @object_ids << object_id
       end
 
       def each
-        super do |oid|
+        @object_ids.each do |oid|
           yield lookup_element(oid)
         end
       end
 
       def [](index)
-        lookup_element super
+        lookup_element @object_ids[index]
       end
 
       def first
-        lookup_element super
+        lookup_element @object_ids.first
       end
 
       def last
-        lookup_element super
+        lookup_element @object_ids.last
       end
 
-      alias_method :object_ids, :to_a
-
       def to_a
-        object_ids.map do |oid|
+        @object_ids.map do |oid|
           lookup_element oid
         end
+      end
+
+      def empty?
+        @object_ids.empty?
       end
 
       def inspect
         returning String.new do |str|
           str << "<#{self.class} "
-          str << object_ids.map { |id| "object_id:#{id}" }.inspect.gsub('"', '')
+          str << @object_ids.map { |id| "object_id:#{id}" }.inspect.gsub('"', '')
           str << ">"
         end
       end

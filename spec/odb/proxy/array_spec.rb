@@ -160,6 +160,20 @@ module Odb
           @array.first
         end
       end
+
+      describe "map" do
+        before do
+          @obj = mock 'object'
+          Odb::Object.stub!(:read).and_return @obj
+          @array = Odb::Proxy::Array.new(1)
+        end
+
+        it "should return the objects" do
+          elements = []
+          @array.map { |e| elements << e }
+          elements.should == [@obj]
+        end
+      end
     end
   end
 end
