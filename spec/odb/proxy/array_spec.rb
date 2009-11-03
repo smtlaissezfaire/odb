@@ -130,6 +130,36 @@ module Odb
           @array.inspect.should == "<Odb::Proxy::Array [object_id:1, object_id:2]>"
         end
       end
+
+      describe "caching" do
+        before do
+          @obj = mock 'object'
+          Odb::Object.stub!(:read).and_return @obj
+          @array = Odb::Proxy::Array.new(1)
+        end
+
+        it "should not lookup the same element twice" do
+          @array.first
+          Odb::Object.should_not_receive(:read)
+          @array.first
+        end
+      end
+
+      describe "reloading" do
+        before do
+          @obj = mock 'object'
+          Odb::Object.stub!(:read).and_return @obj
+          @array = Odb::Proxy::Array.new(1)
+        end
+
+        it "should not lookup the same element twice" do
+          @array.first
+
+          @array.reload
+          Odb::Object.should_receive(:read)
+          @array.first
+        end
+      end
     end
   end
 end
