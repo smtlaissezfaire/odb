@@ -24,7 +24,11 @@ module Odb
       end
 
       def inspect
-        object_ids.map { |id| "object_id:#{id}" }.inspect.gsub('"', '')
+        returning String.new do |str|
+          str << "<#{self.class} "
+          str << object_ids.map { |id| "object_id:#{id}" }.inspect.gsub('"', '')
+          str << ">"
+        end
       end
     end
   end

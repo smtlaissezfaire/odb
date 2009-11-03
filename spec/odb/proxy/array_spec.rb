@@ -116,18 +116,18 @@ module Odb
         end
 
         it "should look as an empty array typically looks with no values" do
-          @array.inspect.should == "[]"
+          @array.inspect.should == "<Odb::Proxy::Array []>"
         end
 
         it "should prepend 'object_id' to an id" do
           @array << 1
-          @array.inspect.should == "[object_id:1]"
+          @array.inspect.should == "<Odb::Proxy::Array [object_id:1]>"
         end
 
         it "should display multiple ids" do
           @array << 1
           @array << 2
-          @array.inspect.should == "[object_id:1, object_id:2]"
+          @array.inspect.should == "<Odb::Proxy::Array [object_id:1, object_id:2]>"
         end
       end
     end
